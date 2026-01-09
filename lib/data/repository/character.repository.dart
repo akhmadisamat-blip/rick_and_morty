@@ -8,9 +8,18 @@ class CharacterRepository {
 
   static Future<List<Character>> getCharacterList({
     required int page,
+    String? name,
+    String? status,
+    String? gender,
+    String? species,
   }) async {
     try {
-      final url = "$_api/character?page=$page";
+      String url = "$_api/character?page=$page";
+      if (name != null && name.isNotEmpty) url += "&name=$name";
+      if (status != null && status.isNotEmpty) url += "&status=$status";
+      if (gender != null && gender.isNotEmpty) url += "&gender=$gender";
+      if (species != null && species.isNotEmpty) url += "&species=$species";
+
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);

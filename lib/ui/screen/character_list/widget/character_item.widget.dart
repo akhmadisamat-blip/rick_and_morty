@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ygroup/data/entity/character.entity.dart';
 import 'package:ygroup/ui/common/widget/gender.widget.dart';
 import 'package:ygroup/ui/common/widget/ui_utils.dart';
+import 'package:ygroup/ui/common/route/portal_page_route.dart';
 import 'package:ygroup/ui/screen/character/charapter.screen.dart';
 
 class CharacterItem extends StatelessWidget {
@@ -15,8 +16,8 @@ class CharacterItem extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => CharacterScreen(character: character),
+          PortalPageRoute(
+            page: CharacterScreen(character: character),
           ),
         );
       },
