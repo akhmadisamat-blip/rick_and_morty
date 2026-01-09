@@ -15,6 +15,8 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
   final List<Character> _characters = [];
   int _page = 1;
   bool _isLoading = false;
+  static const Color _backgroundColor = Color(0xFF24282F);
+  static const Color _accentColor = Color(0xFF97CE4C);
 
   @override
   void initState() {
@@ -31,7 +33,8 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       _loadData();
     }
   }
@@ -42,7 +45,8 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
         _isLoading = true;
       });
       try {
-        final newCharacters = await CharacterRepository.getCharacterList(page: _page);
+        final newCharacters =
+            await CharacterRepository.getCharacterList(page: _page);
         setState(() {
           _characters.addAll(newCharacters);
           _page++;
@@ -59,29 +63,58 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Characters"),
-      ),
-      body: (_isLoading && _characters.isEmpty)
-          ? progressWidget()
-          : ListView.builder(
-              controller: _scrollController,
-              itemCount: _characters.length + 1,
-              itemBuilder: (context, index) {
-                if (index < _characters.length) {
+      backgroundColor: _backgroundColor,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          const SliverAppBar(
+            backgroundColor: _backgroundColor,
+            floating: true,
+            title: Text(
+              "The Rick and Morty",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+            centerTitle: true,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(1.0),
+              child: Divider(color: _accentColor, height: 1),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.65, // Adjust based on card content
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
                   final character = _characters[index];
                   return CharacterItem(character: character);
-                } else if (_isLoading) {
-                  return progressWidget();
-                }
-              },
+                },
+                childCount: _characters.length,
+              ),
             ),
-    );
-  }
-
-  Widget progressWidget() {
-    return const Center(
-      child: CircularProgressIndicator(),
+          ),
+          if (_isLoading)
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(_accentColor),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
