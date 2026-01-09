@@ -43,9 +43,9 @@ class CharacterItem extends StatelessWidget {
             )),
             horizontalSpace(10),
             GenderWidget(
-              isMale: character.isMale,
-              width: 20,
-              height: 20,
+              gender: Gender.fromString(character.gender),
+              width: 30,
+              height: 30,
             ),
           ],
         ),
